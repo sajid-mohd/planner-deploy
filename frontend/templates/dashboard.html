@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard | Productivity Planner</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img src="/static/img/planner_logo_100x100.png" alt="Planner Logo" class="navbar-logo" style="max-width: 35px;;">
+                Planner Dashboard
+            </a>
+            <div class="ms-auto">
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user me-1"></i>
+                        <span id="username">User</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" style="width: 300px;">
+                        <!-- Momentum Widget -->
+                        <li>
+                            <div class="px-3 py-2">
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="level-badge me-2" style="width: 40px; height: 40px;">
+                                        <span id="current-level" class="h5 mb-0">1</span>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 id="level-title" class="mb-1" style="font-size: 0.9rem;">Loading...</h6>
+                                        <div class="progress" style="height: 6px;">
+                                            <div id="level-progress" class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted" style="font-size: 0.8rem;">
+                                    <span><i class="fas fa-star me-1"></i><span id="total-points">0</span> pts</span>
+                                    <span><i class="fas fa-trophy me-1"></i><span id="achievements-count">0</span></span>
+                                    <span><i class="fas fa-crown me-1"></i>#<span id="leaderboard-rank">0</span></span>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/momentum">
+                            <i class="fas fa-chart-line me-2"></i>Momentum Profile
+                        </a></li>
+                        <li><a class="dropdown-item" href="/tafakur">
+                            <i class="fas fa-book-open me-2"></i>Tafakur Reflection
+                        </a></li>
+                        <li><a class="dropdown-item" href="#">
+                            <i class="fas fa-user-cog me-2"></i>Profile Settings
+                        </a></li>
+                        <li><a class="dropdown-item" href="#">
+                            <i class="fas fa-bell me-2"></i>Notifications
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container" style="margin-top: 6rem;">
+        <!-- Timer Section -->
+        <div class="floating-timer">
+          <button class="minimize-btn">
+              <i class="fas fa-minus"></i>
+          </button>
+          
+          <!-- Digital Clock -->
+          <div class="digital-clock">
+              <span class="hours">00</span>
+              <span class="colon">:</span>
+              <span class="minutes">00</span>
+              <span class="colon">:</span>
+              <span class="seconds">00</span>
+          </div>
+  
+          <!-- Timer Section -->
+          <section class="timer-section">
+              <h2>
+                  <i class="fas fa-clock me-2"></i>Pomodoro Timer
+              </h2>
+              <div class="timer-container">
+                  <div class="timer-settings">
+                      <div class="time-input-group">
+                          <label for="workTime">Work Duration (min)</label>
+                          <input type="number" id="workTime" value="25" min="1">
+                      </div>
+                      <div class="time-input-group">
+                          <label for="breakTime">Break Duration (min)</label>
+                          <input type="number" id="breakTime" value="5" min="1">
+                      </div>
+                  </div>
+                  <div class="timer-display">
+                      <h2>Current Session</h2>
+                      <div id="time">25:00</div>
+                      <div class="progress-container">
+                          <div id="progress" class="progress" style="width: 0%"></div>
+                      </div>
+                      <div class="timer-controls">
+                          <button class="btn-timer btn-start" id="startBtn">
+                              <i class="fas fa-play"></i>Start
+                          </button>
+                          <button class="btn-timer btn-reset" id="resetBtn">
+                              <i class="fas fa-redo"></i>Reset
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </section>
+      </div>
+
+        <!-- Task Management Section -->
+        <section class="task-section">
+            <div class="task-header">
+                <h2 class="fw-bold mb-0">
+                    <i class="fas fa-tasks me-2"></i>Time Slots
+                </h2>
+                <div class="d-flex align-items-center">
+                    <label for="bookingDate" class="me-2 mb-0">Date:</label>
+                    <input type="date" id="bookingDate" class="date-picker">
+                </div>
+            </div>
+
+            <form id="timeSlotForm" class="task-form">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="startTime" class="form-label">Start Time</label>
+                        <input type="time" id="startTime" class="form-control" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="endTime" class="form-label">End Time</label>
+                        <input type="time" id="endTime" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="task" class="form-label">Task Description</label>
+                        <input type="text" id="task" class="form-control" placeholder="What are you planning to do?" required>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                            <i class="fas fa-plus me-2"></i>Add
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="table-responsive py-3">
+                <table class="task-table" id="timeSlotTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Task</th>
+                            <th>Report (Min)</th>
+                            <th>Progress</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example row structure -->
+                        <tr>
+                            <td>9:00 - 10:00</td>
+                            <td>
+                                <span class="badge bg-success">Completed</span>
+                            </td>
+                            <td>Project Planning</td>
+                            <td>55</td>
+                            <td>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: 85%"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="rating">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="far fa-star text-warning"></i>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-sm btn-outline-primary edit-slot" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger delete-slot" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section class="analytics-section">
+            <h2 class="fw-bold mb-4">
+                <i class="fas fa-chart-bar me-2"></i>Productivity Analytics
+            </h2>
+            <!-- <canvas id="productivityChart"></canvas> -->
+            <!-- Today's Analytics Section -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-4">Today</h2>
+                <div class="bg-white p-4 rounded-lg shadow">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                    <p class="text-gray-600">Total Slots</p>
+                    <p class="text-2xl font-bold" id="todayTotalSlots">-</p>
+                    </div>
+                    <div>
+                    <p class="text-gray-600">Completed Slots</p>
+                    <p class="text-2xl font-bold text-green-600" id="todayCompletedSlots">-</p>
+                    </div>
+                    <div>
+                    <p class="text-gray-600">Total Minutes</p>
+                    <p class="text-2xl font-bold" id="todayTotalMinutes">-</p>
+                    </div>
+                    <div>
+                    <p class="text-gray-600">Completion Rate</p>
+                    <p class="text-2xl font-bold" id="todayCompletionRate">-%</p>
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+            <!-- Add a button to navigate to the analytics page -->
+            <div class="mt-4">
+                <button class="btn btn-primary" onclick="window.location.href='/analytics'">
+                    <i class="fas fa-chart-line me-2"></i>View Detailed Analytics
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/script.js"></script>
+    <script src="/static/momentum.js"></script>
+
+</body>
+</html> 

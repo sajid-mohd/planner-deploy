@@ -1,0 +1,8 @@
+*__pycache__*
+*.db
+venv
+*.pyc
+.env
+structure.txt
+.pytest_cache
+.vscode
