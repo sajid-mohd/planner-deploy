@@ -139,7 +139,7 @@ async def get_or_create_user_from_google(
 
     if not user:
         # bcrypt-safe password length
-        random_pass = secrets.token_urlsafe(32)[:32]
+        random_pass = secrets.token_hex(32)
 
         username = email.split("@")[0]
 
