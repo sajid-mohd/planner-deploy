@@ -30,7 +30,7 @@ async def google_oauth_init(request: Request):
         base_url = str(request.base_url).rstrip("/")
 
         # Railway callback URL
-        redirect_uri = f"{base_url}/auth/callback"
+        redirect_uri = f"{base_url}/api/auth/callback"
 
         print("=" * 50)
         print("GOOGLE LOGIN INIT")
