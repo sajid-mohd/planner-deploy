@@ -17,9 +17,8 @@ models.Base.metadata.create_all(bind=database.engine)
 app = FastAPI()
 
 # Trust Railway's reverse proxy — makes request.base_url return https://
-app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://web-production-d51c5.up.railway.app"],
@@ -28,9 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add session middleware - required for OAuth
-app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
-
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
 
 # Include routers
