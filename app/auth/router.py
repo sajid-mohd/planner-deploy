@@ -137,13 +137,13 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
         
         # Return the callback template with the token data
         return templates.TemplateResponse(
-            "callback.html",
-            {
-                "request": request,
-                "access_token": access_token,
-                "token_type": "bearer"
-            }
-        )
+    request=request,
+    name="callback.html",
+    context={
+        "access_token": access_token,
+        "token_type": "bearer"
+    }
+)
         
     except Exception as e:
         import traceback
@@ -151,13 +151,11 @@ async def auth_callback(request: Request, db: Session = Depends(get_db)):
         print("Full traceback:")
         print(traceback.format_exc())
         return templates.TemplateResponse(
-            "callback.html",
-            {
-                "request": request,
-                "detail": str(e)
-            },
-            status_code=400
-        )
+    request=request,
+    name="callback.html",
+    context={"detail": str(e)},
+    status_code=400
+)
 
 @router.post("/register", response_model=User)
 async def register(user: UserCreate, db: Session = Depends(get_db)):
